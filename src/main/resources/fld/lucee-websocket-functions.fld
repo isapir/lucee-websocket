@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE func-lib PUBLIC "-//Lucee//DTD CFML Function Library 1.0//EN"
+	"dtd/web-cfmfunctionlibrary_1_0.dtd">
+<!-- http://www.getrailo.com/j2ee/dtd/web-jspfunctionlibrary_1_0.dtd -->
+<func-lib>
+
+	<flib-version>1.00</flib-version>
+	<short-name>Lucee Websocket</short-name>
+	<uri>http://lucee.twentyonesolutions.net/function/lucee-websocket</uri>
+	<display-name>Lucee WebSocket</display-name>
+	<description>
+		Functions added by the Lucee WebSocket extension
+	</description>
+
+
+	<!-- WebsocketRegister !-->
+	<function>
+		<name>WebsocketRegister</name>
+		<class bundle-name="net.twentyonesolutions.luceewebsocket">net.twentyonesolutions.lucee.websocket.functions.WebsocketRegister</class>
+		<description>Creates a WebSocket Endpoint on the servlet container and registers a Listener Component with it.</description>
+		<argument>
+			<name>endpoint</name>
+			<type>string</type>
+			<required>yes</required>
+			<description>The WebSocket's endpoint path, e.g. "/ws/echo" or "/chat/{channel}"</description>
+		</argument>
+		<argument>
+			<name>listener</name>
+			<type>any</type>
+			<required>yes</required>
+			<description>A Component whose event handler methods will be called to handle Websocket events, like
+				onHandshake(), onOpen(), onMessage(), onClose(), and onError()
+			</description>
+		</argument>
+		<!--argument>
+			<name>settings</name>
+			<type>struct</type>
+			<required>no</required>
+			<description>A Struct with settings like TODO: log file [application], TODO: ConnectionManager listener (notify)</description>
+		</argument!-->
+		<return>
+			<type>any</type>
+		</return>
+	</function>
+
+
+
+	<!-- RegisterWebsocket !-->
+	<function>
+		<name>RegisterWebsocket</name>
+		<status>deprecated</status>
+		<class bundle-name="net.twentyonesolutions.luceewebsocket">net.twentyonesolutions.lucee.websocket.functions.WebsocketRegister</class>
+		<description>This function is deprecated and will be removed in future versions.  Please use the function
+			WebsocketRegister() instead.
+			Registers a Listener Component with a Websocket Endpoint</description>
+		<argument>
+			<name>id</name>
+			<type>string</type>
+			<required>yes</required>
+			<description>The Websocket id path, e.g. "/ws/echo" or "/ws/chat/{channel}"</description>
+    	</argument>
+		<argument>
+			<name>listener</name>
+			<type>any</type>
+			<required>yes</required>
+			<description>A Component whose methods will be called to handle Websocket events</description>
+    	</argument>
+		<return>
+			<type>any</type>
+		</return>
+	</function>
+
+</func-lib>
