@@ -147,8 +147,9 @@ public class WebsocketUtil {
      */
     public static lucee.runtime.type.scope.Session getSessionScope(javax.websocket.Session wsSession){
 
-        lucee.runtime.type.scope.Session luceeSession = (lucee.runtime.type.scope.Session) wsSession.getUserProperties().get(HandshakeHandler.KEY_LUCEE_SESSION);
-        return luceeSession;
+        lucee.runtime.type.scope.Session sessionScope = (lucee.runtime.type.scope.Session) wsSession.getUserProperties().get(HandshakeHandler.KEY_LUCEE_SESSION);
+        sessionScope.touch();           // keep alive
+        return sessionScope;
     }
 
 

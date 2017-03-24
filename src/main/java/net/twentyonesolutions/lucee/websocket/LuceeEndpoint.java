@@ -145,7 +145,7 @@ public class LuceeEndpoint extends Endpoint {
 
         ConnectionManager connMgr = ConnectionManager.getConnectionManager(wsSession);
 
-        connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onError(); " + throwable.toString() + ". stack trace: " + WebsocketUtil.getStackTrace(throwable));
+        connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onError(); " + WebsocketUtil.getStackTrace(throwable));
 
         WebSocket websocket = WebsocketUtil.asWebsocketWrapper(wsSession);
 

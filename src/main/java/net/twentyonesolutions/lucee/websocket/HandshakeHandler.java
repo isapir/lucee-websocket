@@ -26,12 +26,12 @@ import static net.twentyonesolutions.lucee.websocket.Constants.*;
  */
 public class HandshakeHandler extends ServerEndpointConfig.Configurator {
 
-//    final public static String KEY_URI_AUTHORITY = "javax.websocket.endpoint.authority";        // host:port = same as CGI.HTTP_HOST
-    final public static String KEY_ENDPOINT_PATH = "javax.websocket.endpoint.path";             // the endpoint path, e.g. /chat/{channel}
-    final public static String KEY_LUCEE_APP_KEY = "net.twentyonesolutions.lucee.app.appkey";   // same as KEY_URI_AUTHORITY + KEY_ENDPOINT_PATH
-    final public static String KEY_LUCEE_SESSION = "lucee.runtime.type.scope.Session";          // gives access to Lucee Session Scope
-    final public static String KEY_LUCEE_STRUCT  = "lucee.runtime.type.Struct";                 // provides struct for setting/getting arbitrary properties
-    final public static String KEY_CONN_MANAGER  = ConnectionManager.class.getCanonicalName();
+//    public static final String KEY_URI_AUTHORITY = "javax.websocket.endpoint.authority";        // host:port = same as CGI.HTTP_HOST
+    public static final String KEY_ENDPOINT_PATH = "javax.websocket.endpoint.path";             // the endpoint path, e.g. /chat/{channel}
+    public static final String KEY_LUCEE_APP_KEY = "net.twentyonesolutions.lucee.app.appkey";   // same as KEY_URI_AUTHORITY + KEY_ENDPOINT_PATH
+    public static final String KEY_LUCEE_SESSION = "lucee.runtime.type.scope.Session";          // gives access to Lucee Session Scope
+    public static final String KEY_LUCEE_STRUCT  = "lucee.runtime.type.Struct";                 // provides struct for setting/getting arbitrary properties
+    public static final String KEY_CONN_MANAGER  = ConnectionManager.class.getCanonicalName();
 
 
     public static String idCookieName = "cfid";
