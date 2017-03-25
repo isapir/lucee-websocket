@@ -102,11 +102,14 @@ public class HandshakeHandler extends ServerEndpointConfig.Configurator {
 
             connMgr.log(Log.LEVEL_DEBUG, "HandshakeHandler.modifyHandshake(); " + listenerKey + "; " + idCookieName + ": " + (idCookieValue != null ? idCookieValue : ""));
 
-            Session luceeSession = null;
+            Session sessionScope = null;
             if (idCookieValue != null){
+
                 // retrieve Lucee Session and make it available via UserProperties
-                luceeSession = appListener.getApp().getSessionScope(idCookieValue);
-                userProps.put(HandshakeHandler.KEY_LUCEE_SESSION, luceeSession);
+                sessionScope = appListener.getApp().getSessionScope(idCookieValue);
+
+//                do not cache a reference to the Session scope as the session may expire and the reference will be to a ghost, i.e. websocket listener may modify the session but Lucee will never the changes
+//                userProps.put(HandshakeHandler.KEY_LUCEE_SESSION, sessionScope);
             }
 
             Struct struct = LuceeApps.getCreationUtil().createStruct(); // create a cfml struct and put it in user properties for easier cfml access
@@ -132,7 +135,7 @@ public class HandshakeHandler extends ServerEndpointConfig.Configurator {
                     ,ARG_ENDPOINT_CONFIG, sec
                     ,ARG_REQUEST, request
                     ,ARG_RESPONSE, response
-                    ,ARG_SESSION_SCOPE, luceeSession
+                    ,ARG_SESSION_SCOPE, sessionScope
                     ,ARG_APPLICATION_SCOPE, appListener.getApp().getApplicationScope()
             );
 

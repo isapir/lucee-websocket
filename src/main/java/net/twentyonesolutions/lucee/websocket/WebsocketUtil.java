@@ -147,8 +147,16 @@ public class WebsocketUtil {
      */
     public static lucee.runtime.type.scope.Session getSessionScope(javax.websocket.Session wsSession){
 
-        lucee.runtime.type.scope.Session sessionScope = (lucee.runtime.type.scope.Session) wsSession.getUserProperties().get(HandshakeHandler.KEY_LUCEE_SESSION);
-        sessionScope.touch();           // keep alive
+//        lucee.runtime.type.scope.Session sessionScope = (lucee.runtime.type.scope.Session)wsSession.getUserProperties().get(HandshakeHandler.KEY_LUCEE_SESSION);
+
+        LuceeAppListener appListener = WebsocketUtil.getLuceeAppListener(wsSession);
+        String cfid = (String)wsSession.getUserProperties().get(HandshakeHandler.idCookieName);
+
+        lucee.runtime.type.scope.Session sessionScope = appListener.getApp().getSessionScope(cfid);
+
+        if (sessionScope != null)
+            sessionScope.touch();           // keep session alive
+
         return sessionScope;
     }
 
