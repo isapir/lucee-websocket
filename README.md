@@ -4,12 +4,16 @@ The easiest way to install the extension is from the Lucee Admin.  Navigate to t
 
 ## Getting Started
 
-The WebSocket API is event driven, meaning that you register event handling methods, e.g. _onOpen()_, _onMessage()_, etc, and those are called when the corresponding events are triggered.
+The WebSocket API is event driven, meaning that you register event handling methods (e.g. _onOpen()_, _onMessage()_, etc), and those are called when the corresponding events are triggered.
 
 To configure a WebSocket endpoint call the function 
 
     WebsocketRegister(String endpoint, Component listener):ConnectionManager
     
+This should only be done once, so you can do that in Application.cfc's onApplicationStart().
+
+Each _endpoint_ has its own _ConnectionManager_ object, which keeps track of all of the client WebSockets that are connected to that _endpoint_.  You can either store the _ConnectionManager_ in an Application scope variable, or retrieve it from a _WebSocket_ argument that is passed to some of the event handlers by calling the method _getConnectionManager()_ on that argument.
+
 
 
 ## Copyright / License
