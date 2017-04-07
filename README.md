@@ -1,3 +1,7 @@
+## Installation 
+
+The easiest way to install the extension is from the Lucee Admin.  Navigate to the Extension Applications page in the Web or Server Admin, e.g. `/lucee/admin/server.cfm?action=ext.applications`.  Click the Lucee Websockets Extension icon, and then on the next page click the `Install` button.
+
 
 
 ## Copyright / License
