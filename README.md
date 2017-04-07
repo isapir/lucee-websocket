@@ -1,7 +1,15 @@
 ## Installation 
 
-The easiest way to install the extension is from the Lucee Admin.  Navigate to the Extension Applications page in the Web or Server Admin, e.g. `/lucee/admin/server.cfm?action=ext.applications`.  Click the Lucee Websockets Extension icon, and then on the next page click the `Install` button.
+The easiest way to install the extension is from the Lucee Admin.  Navigate to the Extension Applications page in the Web or Server Admin, e.g. `/lucee/admin/server.cfm?action=ext.applications`.  Click the *Lucee Websockets Extension* icon, and then on the next page click the `Install` button.
 
+## Getting Started
+
+The WebSocket API is event driven, meaning that you register event handling methods, e.g. _onOpen()_, _onMessage()_, etc, and those are called when the corresponding events are triggered.
+
+To configure a WebSocket endpoint call the function 
+
+    WebsocketRegister(String endpoint, Component listener):ConnectionManager
+    
 
 
 ## Copyright / License
