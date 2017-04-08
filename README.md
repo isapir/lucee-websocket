@@ -10,9 +10,11 @@ To configure a WebSocket endpoint call the function
 
     WebsocketRegister(String endpoint, Component listener):ConnectionManager
     
+Where `endpoint` is the URI for the incoming WebSocket connections, e.g. `/ws/chat/{channel}`, and the Component listener is a component that implements any of the event handling methods as specified in the [Listener Component API](../../wiki/Listener-Component-API).
+    
 This should only be done once, so you can do that in Application.cfc's onApplicationStart().
 
-Each _endpoint_ has its own [ConnectionManager](../../wiki/ConnectionManager-API) object, which keeps track of all of the client WebSockets that are connected to that _endpoint_.  You can either store the _ConnectionManager_ in an Application scope variable, or retrieve it from a _WebSocket_ argument that is passed to some of the event handlers by calling the method _getConnectionManager()_ on that argument.
+Each _endpoint_ has its own [ConnectionManager](../../wiki/ConnectionManager-API) object, which keeps track of all of the client WebSockets that are connected to that _endpoint_.  You can either store the _ConnectionManager_ in an Application scope variable, or retrieve it from a [WebSocket](wiki/WebSocket-API) object that is passed as as argument to some of the event handlers by calling the method _getConnectionManager()_ on that argument, i.e. `arguments.websocket.getConnectionManager()`.
 
 
 
