@@ -12,7 +12,7 @@ To configure a WebSocket endpoint call the function
     
 This should only be done once, so you can do that in Application.cfc's onApplicationStart().
 
-Each _endpoint_ has its own _ConnectionManager_ object, which keeps track of all of the client WebSockets that are connected to that _endpoint_.  You can either store the _ConnectionManager_ in an Application scope variable, or retrieve it from a _WebSocket_ argument that is passed to some of the event handlers by calling the method _getConnectionManager()_ on that argument.
+Each _endpoint_ has its own [ConnectionManager](../../wiki/ConnectionManager-API) object, which keeps track of all of the client WebSockets that are connected to that _endpoint_.  You can either store the _ConnectionManager_ in an Application scope variable, or retrieve it from a _WebSocket_ argument that is passed to some of the event handlers by calling the method _getConnectionManager()_ on that argument.
 
 
 
