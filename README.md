@@ -26,6 +26,10 @@ Each _endpoint_ has its own [ConnectionManager](../../wiki/ConnectionManager-API
 
 Check the [WIKI](../../wiki)
 
+## Discussion
+
+Please use https://dev.lucee.org/t/lucee-websockets-extension/2067
+
 ## Copyright / License
 
 Copyright 2016-2017 Igal Sapir
