@@ -28,7 +28,7 @@ Check the [WIKI](../../wiki)
 
 ## Discussion
 
-Please use https://dev.lucee.org/t/lucee-websockets-extension/2067
+Please use [Lucee Websockets Extension on Lucee Dev](https://dev.lucee.org/t/lucee-websockets-extension/2067)
 
 ## Copyright / License
 
