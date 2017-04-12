@@ -677,6 +677,9 @@ public class WebSocket implements javax.websocket.Session, Objects {
             return result;
         }
 
+        if (WEBSOCKET_METHOD_GET_QUERY_STRING.equals(method))
+            return this.getQueryString();
+
         if (WEBSOCKET_METHOD_GET_REQUEST_URI.equals(method))
             return this.getRequestURI();
 

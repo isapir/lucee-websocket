@@ -32,8 +32,9 @@ public class Constants {
     public static final Collection.Key WEBSOCKET_METHOD_GET_MAX_IDLE_TIMEOUT = LuceeApps.toKey("getMaxIdleTimeout");
     public static final Collection.Key WEBSOCKET_METHOD_GET_OPEN_SESSIONS = LuceeApps.toKey("getOpenSessions");
     public static final Collection.Key WEBSOCKET_METHOD_GET_PATH_PARAMETERS = LuceeApps.toKey("getPathParameters");
-    public static final Collection.Key WEBSOCKET_METHOD_GET_USER_PROPERTIES = LuceeApps.toKey("getUserProperties");
+    public static final Collection.Key WEBSOCKET_METHOD_GET_QUERY_STRING = LuceeApps.toKey("getQueryString");
     public static final Collection.Key WEBSOCKET_METHOD_GET_REQUEST_URI = LuceeApps.toKey("getRequestURI");
+    public static final Collection.Key WEBSOCKET_METHOD_GET_USER_PROPERTIES = LuceeApps.toKey("getUserProperties");
     public static final Collection.Key WEBSOCKET_METHOD_GET_WEBSOCKET_SESSION = LuceeApps.toKey("getWebsocketSession");
     public static final Collection.Key WEBSOCKET_METHOD_IS_OPEN = LuceeApps.toKey("isOpen");
     public static final Collection.Key WEBSOCKET_METHOD_IS_SECURE = LuceeApps.toKey("isSecure");
