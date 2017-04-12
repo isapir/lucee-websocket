@@ -6,6 +6,7 @@ import lucee.runtime.dump.DumpData;
 import lucee.runtime.dump.DumpProperties;
 import lucee.runtime.dump.DumpTable;
 import lucee.runtime.exp.PageException;
+import lucee.runtime.type.Array;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.Objects;
 import lucee.runtime.type.Struct;
@@ -615,11 +616,41 @@ public class WebSocket implements javax.websocket.Session, Objects {
     @Override
     public Object call(PageContext pc, Collection.Key method, Object[] args) throws PageException {
 
+        if (WEBSOCKET_METHOD_CLOSE.equals(method)){
+
+            try {
+
+                if (args.length > 0){
+
+                    String reason = (args.length == 2) ? LuceeApps.getCastUtil().toString(args[1]) : "";
+                    this.close(new CloseReason(CloseReason.CloseCodes.getCloseCode(LuceeApps.getCastUtil().toIntValue(args[0])), reason));
+                }
+                else {
+
+                    this.close();
+                }
+            } catch (Exception e) {
+                log(Log.LEVEL_DEBUG, e.toString());
+            }
+
+            return null;
+        }
+
         if (WEBSOCKET_METHOD_GET_ASYNC_REMOTE.equals(method))
             return this.getAsyncRemote();
 
         if (WEBSOCKET_METHOD_GET_BASIC_REMOTE.equals(method))
             return this.getBasicRemote();
+
+        if (WEBSOCKET_METHOD_GET_CHANNELS.equals(method)){
+
+            Array result = LuceeApps.getCreationUtil().createArray();
+
+            for (String channel : this.getChannels())
+                result.append(channel);
+
+            return result;
+        }
 
         if (WEBSOCKET_METHOD_GET_CONN_MANAGER.equals(method))
             return this.getConnectionManager();
@@ -639,11 +670,21 @@ public class WebSocket implements javax.websocket.Session, Objects {
         if (WEBSOCKET_METHOD_GET_OPEN_SESSIONS.equals(method))
             return this.getOpenSessions();
 
+        if (WEBSOCKET_METHOD_GET_PATH_PARAMETERS.equals(method)){
+
+            Struct result = LuceeApps.getCreationUtil().createStruct();
+            result.putAll(this.getPathParameters());
+            return result;
+        }
+
         if (WEBSOCKET_METHOD_GET_REQUEST_URI.equals(method))
             return this.getRequestURI();
 
         if (WEBSOCKET_METHOD_GET_USER_PROPERTIES.equals(method))
             return this.getUserProperties();
+
+        if (WEBSOCKET_METHOD_GET_WEBSOCKET_SESSION.equals(method))
+            return this.wsSession;
 
         if (WEBSOCKET_METHOD_IS_OPEN.equals(method))
             return this.isOpen();

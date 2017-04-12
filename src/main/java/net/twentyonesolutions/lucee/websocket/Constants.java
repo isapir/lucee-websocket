@@ -21,6 +21,8 @@ public class Constants {
     public static final Collection.Key LISTENER_METHOD_ON_UNSUBSCRIBE = LuceeApps.toKey("onUnsubscribe");
 
 
+    public static final Collection.Key WEBSOCKET_METHOD_CLOSE = LuceeApps.toKey("close");
+    public static final Collection.Key WEBSOCKET_METHOD_GET_CHANNELS = LuceeApps.toKey("getChannels");
     public static final Collection.Key WEBSOCKET_METHOD_GET_ASYNC_REMOTE = LuceeApps.toKey("getAsyncRemote");
     public static final Collection.Key WEBSOCKET_METHOD_GET_BASIC_REMOTE = LuceeApps.toKey("getBasicRemote");
     public static final Collection.Key WEBSOCKET_METHOD_GET_CONN_MANAGER = LuceeApps.toKey("getConnectionManager");
@@ -29,8 +31,10 @@ public class Constants {
     public static final Collection.Key WEBSOCKET_METHOD_GET_ID = LuceeApps.toKey("getId");
     public static final Collection.Key WEBSOCKET_METHOD_GET_MAX_IDLE_TIMEOUT = LuceeApps.toKey("getMaxIdleTimeout");
     public static final Collection.Key WEBSOCKET_METHOD_GET_OPEN_SESSIONS = LuceeApps.toKey("getOpenSessions");
+    public static final Collection.Key WEBSOCKET_METHOD_GET_PATH_PARAMETERS = LuceeApps.toKey("getPathParameters");
     public static final Collection.Key WEBSOCKET_METHOD_GET_USER_PROPERTIES = LuceeApps.toKey("getUserProperties");
     public static final Collection.Key WEBSOCKET_METHOD_GET_REQUEST_URI = LuceeApps.toKey("getRequestURI");
+    public static final Collection.Key WEBSOCKET_METHOD_GET_WEBSOCKET_SESSION = LuceeApps.toKey("getWebsocketSession");
     public static final Collection.Key WEBSOCKET_METHOD_IS_OPEN = LuceeApps.toKey("isOpen");
     public static final Collection.Key WEBSOCKET_METHOD_IS_SECURE = LuceeApps.toKey("isSecure");
     public static final Collection.Key WEBSOCKET_METHOD_SEND_TEXT = LuceeApps.toKey("sendText");

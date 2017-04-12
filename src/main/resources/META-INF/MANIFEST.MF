@@ -5,7 +5,7 @@ Created-By: isapir
 Bundle-ManifestVersion: 2
 Bundle-Name: LuceeWebsocket
 Bundle-SymbolicName: net.twentyonesolutions.luceewebsocket
-Bundle-Version: 1.1.2.0
+Bundle-Version: 1.1.3.0
 Export-Package: net.twentyonesolutions.lucee.websocket;uses:="javax.servlet,lucee.runtime,lucee.runtime.exp,lucee.runtime.listener,net.twentyonesolutions.luceeapps";version="1.1.2"
 Import-Package: javax.servlet,javax.servlet.http,lucee.runtime,lucee.runtime.exp,lucee.runtime.listener,lucee.runtime.type.scope,lucee.runtime.util,net.twentyonesolutions.lucee.app,net.twentyonesolutions.lucee.core
 Comment: (use this line if using javax.websocket-api for javax.websocket as opposed to bootdelegate) Import-Package: javax.servlet,javax.servlet.http,javax.websocket,javax.websocket.server,lucee.runtime,lucee.runtime.exp,lucee.runtime.listener,lucee.runtime.type.scope,lucee.runtime.util,net.twentyonesolutions.lucee.app
