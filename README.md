@@ -22,9 +22,11 @@ This should only be done once, so you can do that in Application.cfc's onApplica
 
 Each _endpoint_ has its own [ConnectionManager](../../wiki/ConnectionManager-API) object, which keeps track of all of the client WebSockets that are connected to that _endpoint_.  You can either store the _ConnectionManager_ in an Application scope variable, or retrieve it from a [WebSocket](wiki/WebSocket-API) object that is passed as as argument to some of the event handlers by calling the method _getConnectionManager()_ on that argument, i.e. `arguments.websocket.getConnectionManager()`.
 
-## Documentation
+## Documentation and Tutorials
 
-Check the [WIKI](../../wiki)
+Check the [WIKI](../../wiki) for reference and documentation
+
+See Getting Started at https://youtu.be/r2s2kGQVZqg
 
 ## Discussion
 
