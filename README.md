@@ -26,7 +26,7 @@ Each _endpoint_ has its own [ConnectionManager](../../wiki/ConnectionManager-API
 
 Check the [WIKI](../../wiki) for reference and documentation
 
-See Getting Started at https://youtu.be/r2s2kGQVZqg
+See Getting Started Video Tutorial at:
 
 [![Getting Started with Lucee WebSockets](http://img.youtube.com/vi/r2s2kGQVZqg/0.jpg)](http://www.youtube.com/watch?v=r2s2kGQVZqg "Lucee WebSockets - Getting Started")
 
