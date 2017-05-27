@@ -28,6 +28,9 @@ Check the [WIKI](../../wiki) for reference and documentation
 
 See Getting Started at https://youtu.be/r2s2kGQVZqg
 
+[![Getting Started with Lucee WebSockets](http://img.youtube.com/vi/r2s2kGQVZqg/0.jpg)](http://www.youtube.com/watch?v=r2s2kGQVZqg "Lucee WebSockets - Getting Started")
+
+
 ## Discussion
 
 Please use [Lucee Websockets Extension on Lucee Dev](https://dev.lucee.org/t/lucee-websockets-extension/2067)
