@@ -26,10 +26,13 @@ Each _endpoint_ has its own [ConnectionManager](../../wiki/ConnectionManager-API
 
 Check the [WIKI](../../wiki) for reference and documentation
 
-See Getting Started Video Tutorial at:
+Watch Getting Started Video Tutorial at:
 
 [![Getting Started with Lucee WebSockets](http://img.youtube.com/vi/r2s2kGQVZqg/0.jpg)](http://www.youtube.com/watch?v=r2s2kGQVZqg "Lucee WebSockets - Getting Started")
 
+Watch Chat Server Example Video Tutorial at:
+
+[![Chat Server Example Video](http://img.youtube.com/vi/rvB7PcNylVY/0.jpg)](http://www.youtube.com/watch?v=rvB7PcNylVY "Lucee WebSockets - Getting Started")
 
 ## Discussion
 
