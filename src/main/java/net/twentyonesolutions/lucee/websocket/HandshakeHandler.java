@@ -7,6 +7,7 @@ import net.twentyonesolutions.lucee.app.LuceeAppListener;
 import net.twentyonesolutions.lucee.app.LuceeApps;
 import net.twentyonesolutions.lucee.websocket.connections.ConnectionManager;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
@@ -20,181 +21,200 @@ import java.util.TreeMap;
 
 import static net.twentyonesolutions.lucee.websocket.Constants.*;
 
-
 /**
- * Created by Admin on 9/25/2016.
+ * Created by Igal on 9/25/2016.
  */
 public class HandshakeHandler extends ServerEndpointConfig.Configurator {
 
-//    public static final String KEY_URI_AUTHORITY = "javax.websocket.endpoint.authority";        // host:port = same as CGI.HTTP_HOST
-    public static final String KEY_ENDPOINT_PATH = "javax.websocket.endpoint.path";             // the endpoint path, e.g. /chat/{channel}
-    public static final String KEY_LUCEE_APP_KEY = "net.twentyonesolutions.lucee.app.appkey";   // same as KEY_URI_AUTHORITY + KEY_ENDPOINT_PATH
-    public static final String KEY_LUCEE_SESSION = "lucee.runtime.type.scope.Session";          // gives access to Lucee Session Scope
-    public static final String KEY_LUCEE_STRUCT  = "lucee.runtime.type.Struct";                 // provides struct for setting/getting arbitrary properties
-    public static final String KEY_CONN_MANAGER  = ConnectionManager.class.getCanonicalName();
+	// public static final String KEY_URI_AUTHORITY = "javax.websocket.endpoint.authority"; // host:port = same as
+	// CGI.HTTP_HOST
+	public static final String KEY_ENDPOINT_PATH = "javax.websocket.endpoint.path"; // the endpoint path, e.g.
+																					// /chat/{channel}
+	public static final String KEY_LUCEE_APP_KEY = "net.twentyonesolutions.lucee.app.appkey"; // same as
+																								// KEY_URI_AUTHORITY +
+																								// KEY_ENDPOINT_PATH
+	public static final String KEY_LUCEE_SESSION = "lucee.runtime.type.scope.Session"; // gives access to Lucee Session
+																						// Scope
+	public static final String KEY_LUCEE_STRUCT = "lucee.runtime.type.Struct"; // provides struct for setting/getting
+																				// arbitrary properties
+	public static final String KEY_CONN_MANAGER = ConnectionManager.class.getCanonicalName();
 
+	public static String idCookieName = "cfid";
 
-    public static String idCookieName = "cfid";
+	/**
+	 * Called by the container after it has formulated a handshake response resulting from a well-formed handshake
+	 * request. The container has already checked that this configuration has a matching URI, determined the validity of
+	 * the origin using the checkOrigin method, and filled out the negotiated subprotocols and extensions based on this
+	 * configuration. Custom configurations may override this method in order to inspect the request parameters and
+	 * modify the handshake response that the server has formulated. and the URI checking also.
+	 *
+	 * <p>
+	 * If the developer does not override this method, no further modification of the request and response are made by
+	 * the implementation.
+	 *
+	 * @param sec
+	 *            the configuration object involved in the handshake
+	 * @param request
+	 *            the opening handshake request.
+	 * @param response
+	 *            the proposed opening handshake response
+	 */
+	@Override
+	public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
 
-    /**
-     * Called by the container after it has formulated a handshake response resulting from
-     * a well-formed handshake request. The container has already
-     * checked that this configuration has a matching URI, determined the
-     * validity of the origin using the checkOrigin method, and filled
-     * out the negotiated subprotocols and extensions based on this configuration.
-     * Custom configurations may override this method in order to inspect
-     * the request parameters and modify the handshake response that the server has formulated.
-     * and the URI checking also.
-     *
-     * <p>If the developer does not override this method, no further
-     * modification of the request and response are made by the implementation.
-     *
-     * @param sec the configuration object involved in the handshake
-     * @param request  the opening handshake request.
-     * @param response the proposed opening handshake response
-     */
-    @Override
-    public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
+		HttpSession httpSession = (HttpSession) request.getHttpSession();
 
-        String listenerKey = getListenerKey(sec, request);                  // endpoint either with or without the host
-        ConnectionManager connMgr = ConnectionManager.getConnectionManager(listenerKey);
+		if (httpSession == null) {
+			throw new RuntimeException(
+					"HttpSession is not initialized. Configure the filter net.twentyonesolutions.servlet.filter.HttpSessionInitializerFilter to resolve this.");
+		}
 
-        try {
+		String webroot = httpSession.getServletContext().getRealPath("/");
 
-            connMgr.log(Log.LEVEL_TRACE, "enter HandshakeHandler.modifyHandshake()");
+		String listenerKey = webroot + "@" + sec.getPath();
 
-            Map<String, Object> userProps = sec.getUserProperties();
+		// get the connection manager for the specific ServletContext and EndPoint Path
+		ConnectionManager connMgr = ConnectionManager.getConnectionManager(listenerKey);
 
-            userProps.put(HandshakeHandler.KEY_ENDPOINT_PATH, listenerKey); // set the key as endpoint path to get the correct ConnectionManager etc.
+		try {
 
-            LuceeAppListener appListener = WebsocketUtil.getLuceeAppListener(listenerKey);
-            if (appListener == null){
+			connMgr.log(Log.LEVEL_TRACE, "enter HandshakeHandler.modifyHandshake()");
 
-                connMgr.log(Log.LEVEL_ERROR, "HandshakeHandler.modifyHandshake() error; No component listener found for [" + listenerKey + "]");
-                throw new RuntimeException("No Component Listener was found for " + listenerKey);
-            }
+			Map<String, Object> userProps = sec.getUserProperties();
 
-            userProps.put(HandshakeHandler.KEY_LUCEE_APP_KEY, listenerKey); // make the listenerKey available via UserProperties
+			userProps.put(HandshakeHandler.KEY_ENDPOINT_PATH, listenerKey); // set the key as endpoint path to get the
+																			// correct ConnectionManager etc.
 
-            userProps.put(KEY_CONN_MANAGER, connMgr);
+			LuceeAppListener appListener = WebsocketUtil.getLuceeAppListener(listenerKey);
+			if (appListener == null) {
 
-            userProps.put("request_uri", request.getRequestURI().toString());
-            userProps.put("request_uri_path", request.getRequestURI().getPath());
+				connMgr.log(Log.LEVEL_ERROR,
+						"HandshakeHandler.modifyHandshake() error; No component listener found for [" + listenerKey
+								+ "]");
+				throw new RuntimeException("No Component Listener was found for " + listenerKey);
+			}
 
-            String httpHost = request.getRequestURI().getAuthority();
-            if (httpHost != null)
-                userProps.put("http_host", request.getRequestURI().getAuthority());
+			userProps.put(HandshakeHandler.KEY_LUCEE_APP_KEY, listenerKey); // make the listenerKey available via
+																			// UserProperties
 
-            userProps.put(PROPERTY_CHANNELS, new HashSet<String>());
+			userProps.put(KEY_CONN_MANAGER, connMgr);
 
-            Map<String, List<String>> reqHeaders = request.getHeaders();
-            List<String> rawCookies = reqHeaders.get("cookie");
-            String idCookieValue = null;
+			userProps.put("request_uri", request.getRequestURI().toString());
+			userProps.put("request_uri_path", request.getRequestURI().getPath());
 
-            if (rawCookies != null && !rawCookies.isEmpty()){
+			String httpHost = request.getRequestURI().getAuthority();
+			if (httpHost != null)
+				userProps.put("http_host", request.getRequestURI().getAuthority());
 
-                Map<String, String> cookies = parseRequestHeaderCookie(rawCookies.get(0));
+			userProps.put(PROPERTY_CHANNELS, new HashSet<String>());
 
-                idCookieValue = cookies.get(idCookieName);
-                if (idCookieValue != null)
-                    userProps.put(idCookieName, idCookieValue);        // store cfid in UserProperties for future use
-            }
+			Map<String, List<String>> reqHeaders = request.getHeaders();
+			List<String> rawCookies = reqHeaders.get("cookie");
+			String idCookieValue = null;
 
-            connMgr.log(Log.LEVEL_DEBUG, "HandshakeHandler.modifyHandshake(); " + listenerKey + "; " + idCookieName + ": " + (idCookieValue != null ? idCookieValue : ""));
+			if (rawCookies != null && !rawCookies.isEmpty()) {
 
-            Session sessionScope = null;
-            if (idCookieValue != null){
+				Map<String, String> cookies = parseRequestHeaderCookie(rawCookies.get(0));
 
-                // retrieve Lucee Session and make it available via UserProperties
-                sessionScope = appListener.getApp().getSessionScope(idCookieValue);
+				idCookieValue = cookies.get(idCookieName);
+				if (idCookieValue != null)
+					userProps.put(idCookieName, idCookieValue); // store cfid in UserProperties for future use
+			}
 
-//                do not cache a reference to the Session scope as the session may expire and the reference will be to a ghost, i.e. websocket listener may modify the session but Lucee will never the changes
-//                userProps.put(HandshakeHandler.KEY_LUCEE_SESSION, sessionScope);
-            }
+			connMgr.log(Log.LEVEL_DEBUG, "HandshakeHandler.modifyHandshake(); " + listenerKey + "; " + idCookieName
+					+ ": " + (idCookieValue != null ? idCookieValue : ""));
 
-            Struct struct = LuceeApps.getCreationUtil().createStruct(); // create a cfml struct and put it in user properties for easier cfml access
-            for (Map.Entry<String, Object> e : userProps.entrySet()){
+			Session sessionScope = null;
+			if (idCookieValue != null) {
 
-                String key = e.getKey();
-                if (key.indexOf('.') > -1){                 // TODO: why?
-                    key = key.substring(key.lastIndexOf('.') + 1);
-                }
+				// retrieve Lucee Session and make it available via UserProperties
+				sessionScope = appListener.getApp().getSessionScope(idCookieValue);
 
-                Object val = e.getValue();
-                if (val instanceof InetSocketAddress)       // TODO: why?
-                    val = val.toString();
+				// do not cache a reference to the Session scope as the session may expire and the reference will be to
+				// a ghost, i.e. websocket listener may modify the session but Lucee will never the changes
+				// userProps.put(HandshakeHandler.KEY_LUCEE_SESSION, sessionScope);
+			}
 
-                struct.setEL(LuceeApps.toKey(key), val);
-            }
-            userProps.put(KEY_LUCEE_STRUCT, struct);    // add it after we populated it from UserProperties so that we don't get a self reference
+			Struct struct = LuceeApps.getCreationUtil().createStruct(); // create a cfml struct and put it in user
+																		// properties for easier cfml access
+			for (Map.Entry<String, Object> e : userProps.entrySet()) {
 
-            // the listener can manipulate the args, or refuse the connection by returning false or throwing an exception
-            Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(
-                     appListener
-                    ,LISTENER_METHOD_ON_HANDSHAKE
-                    ,ARG_ENDPOINT_CONFIG, sec
-                    ,ARG_REQUEST, request
-                    ,ARG_RESPONSE, response
-                    ,ARG_SESSION_SCOPE, sessionScope
-                    ,ARG_APPLICATION_SCOPE, appListener.getApp().getApplicationScope()
-            );
+				String key = e.getKey();
+				if (key.indexOf('.') > -1) { // TODO: why?
+					key = key.substring(key.lastIndexOf('.') + 1);
+				}
 
-            // if the listener's onHandshake returned false then refuse the connection. listener's onHandshake can also throw an exception to refuse the connection
-            if ((luceeResult instanceof Exception) || LuceeApps.isBooleanFalse(luceeResult)){
+				Object val = e.getValue();
+				if (val instanceof InetSocketAddress) // TODO: why?
+					val = val.toString();
 
-                connMgr.log(Log.LEVEL_INFO, "listener.onHandshake() refused the connection.");
-                throw new RuntimeException("connection refused by listener.onHandshake()");
-            }
-        }
-        catch (NullPointerException npe){
-            connMgr.log(Log.LEVEL_ERROR, npe.toString());
-            npe.printStackTrace(System.out);    // helps with debugging NPEs at runtime
-        }
+				struct.setEL(LuceeApps.toKey(key), val);
+			}
+			userProps.put(KEY_LUCEE_STRUCT, struct); // add it after we populated it from UserProperties so that we
+														// don't get a self reference
 
-        connMgr.log(Log.LEVEL_TRACE, "exit HandshakeHandler.modifyHandshake()");
-    }
+			// the listener can manipulate the args, or refuse the connection by returning false or throwing an
+			// exception
+			Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(appListener,
+					LISTENER_METHOD_ON_HANDSHAKE, ARG_ENDPOINT_CONFIG, sec, ARG_REQUEST, request, ARG_RESPONSE,
+					response, ARG_SESSION_SCOPE, sessionScope, ARG_APPLICATION_SCOPE,
+					appListener.getApp().getApplicationScope());
 
+			// if the listener's onHandshake returned false then refuse the connection. listener's onHandshake can also
+			// throw an exception to refuse the connection
+			if ((luceeResult instanceof Exception) || LuceeApps.isBooleanFalse(luceeResult)) {
 
-    private static Map<String, String> parseRequestHeaderCookie(String requestHeaderCookie){
+				connMgr.log(Log.LEVEL_INFO, "listener.onHandshake() refused the connection.");
+				throw new RuntimeException("connection refused by listener.onHandshake()");
+			}
+		}
+		catch (NullPointerException npe) {
+			connMgr.log(Log.LEVEL_ERROR, npe.toString());
+			npe.printStackTrace(System.out); // helps with debugging NPEs at runtime
+		}
 
-        Map<String, String> result = new TreeMap();
+		connMgr.log(Log.LEVEL_TRACE, "exit HandshakeHandler.modifyHandshake()");
+	}
 
-        String name, value;
-        String[] cookies = requestHeaderCookie.split(";"), cookieParts;
+	private static Map<String, String> parseRequestHeaderCookie(String requestHeaderCookie) {
 
-        for (String c : cookies) {
+		Map<String, String> result = new TreeMap();
 
-            cookieParts = c.split("=");
+		String name, value;
+		String[] cookies = requestHeaderCookie.split(";"), cookieParts;
 
-            if (cookieParts.length != 2)
-                continue;
+		for (String c : cookies) {
 
-            try {
+			cookieParts = c.split("=");
 
-                name = cookieParts[0].trim();
-                value = URLDecoder.decode(cookieParts[1].trim(), "UTF-8");
-                result.put(name, value);
-            }
-            catch (UnsupportedEncodingException e) {}     // UTF-8 is always supported
-        }
+			if (cookieParts.length != 2)
+				continue;
 
-        return result;
-    }
+			try {
 
+				name = cookieParts[0].trim();
+				value = URLDecoder.decode(cookieParts[1].trim(), "UTF-8");
+				result.put(name, value);
+			}
+			catch (UnsupportedEncodingException e) {
+			} // UTF-8 is always supported
+		}
 
-    /**
-     * parses the endpoint from the incoming Websocket connection and generates a listener key based on the endpoint
-     * only, so that all hosts listening will handle the connection to the endpoint
-     *
-     * @param sec
-     * @param request
-     * @return
-     */
-    public String getListenerKey(ServerEndpointConfig sec, HandshakeRequest request){
+		return result;
+	}
 
-        String endpoint = sec.getPath();
-        return endpoint;
-    }
+	/**
+	 * parses the endpoint from the incoming Websocket connection and generates a listener key based on the endpoint
+	 * only, so that all hosts listening will handle the connection to the endpoint
+	 *
+	 * @param sec
+	 * @param request
+	 * @return
+	 */
+	public String getListenerKey(ServerEndpointConfig sec, HandshakeRequest request) {
 
+		String endpoint = sec.getPath();
+		return endpoint;
+	}
 
 }

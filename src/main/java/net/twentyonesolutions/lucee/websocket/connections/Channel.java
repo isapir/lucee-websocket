@@ -7,59 +7,52 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by Admin on 3/5/2017.
+ * Created by Igal on 3/5/2017.
  */
 class Channel {
 
-    final String id;
-    final ConcurrentHashMap<WebSocket, Boolean> map;
+	final String id;
+	final ConcurrentHashMap<WebSocket, Boolean> map;
 
+	Channel(String id) {
 
-    Channel(String id){
+		this.id = id;
+		this.map = new ConcurrentHashMap<>();
+	}
 
-        this.id = id;
-        this.map = new ConcurrentHashMap<>();
-    }
+	public int getSubscriberCount() {
 
+		return map.size();
+	}
 
-    public int getSubscriberCount(){
+	public String getId() {
 
-        return map.size();
-    }
+		return id;
+	}
 
+	public Set<WebSocket> getSubscribers() {
 
-    public String getId(){
+		// return map.keySet();
+		Set<WebSocket> result = new HashSet(map.keySet());
+		return result;
+	}
 
-        return id;
-    }
+	int subscribe(WebSocket connection) {
 
+		map.put(connection, true);
 
-    public Set<WebSocket> getSubscribers(){
+		connection.getChannels().add(id);
 
-//        return map.keySet();
-        Set<WebSocket> result = new HashSet(map.keySet());
-        return result;
-    }
+		return map.size();
+	}
 
+	int unsubscribe(WebSocket connection) {
 
+		map.remove(connection);
 
-    int subscribe(WebSocket connection){
+		connection.getChannels().remove(id);
 
-        map.put(connection, true);
-
-        connection.getChannels().add(id);
-
-        return map.size();
-    }
-
-
-    int unsubscribe(WebSocket connection){
-
-        map.remove(connection);
-
-        connection.getChannels().remove(id);
-
-        return map.size();
-    }
+		return map.size();
+	}
 
 }

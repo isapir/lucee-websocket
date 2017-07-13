@@ -12,153 +12,139 @@ import java.util.Map;
 import static net.twentyonesolutions.lucee.websocket.Constants.*;
 
 /**
- * Created by Admin on 10/2/2016.
+ * Created by Igal on 10/2/2016.
  */
 public class LuceeEndpoint extends Endpoint {
 
-    /**
-     * Event that is triggered when a new WebSocket connection is opened, immediately after HandshakeHandler.modifyHandshake()
-     * assuming that an exception was not thrown during the handshake.
-     *
-     * @param wsSession The new session.
-     * @param endpointConfig  The configuration that was set in HandshakeHandler.modifyHandshake(), which provides access to
-     *                the UserProperties via getUserProperties() and PathParams via EndpointConfig..getPathParamMap()
-     */
-    @Override
-    public void onOpen(Session wsSession, EndpointConfig endpointConfig) {
+	/**
+	 * Event that is triggered when a new WebSocket connection is opened, immediately after
+	 * HandshakeHandler.modifyHandshake() assuming that an exception was not thrown during the handshake.
+	 *
+	 * @param wsSession
+	 *            The new session.
+	 * @param endpointConfig
+	 *            The configuration that was set in HandshakeHandler.modifyHandshake(), which provides access to the
+	 *            UserProperties via getUserProperties() and PathParams via EndpointConfig..getPathParamMap()
+	 */
+	@Override
+	public void onOpen(Session wsSession, EndpointConfig endpointConfig) {
 
-        ConnectionManager connMgr = ConnectionManager.getConnectionManager(wsSession);
+		ConnectionManager connMgr = ConnectionManager.getConnectionManager(wsSession);
 
-        WebSocket websocket = WebsocketUtil.asWebsocketWrapper(wsSession);
+		WebSocket websocket = WebsocketUtil.asWebsocketWrapper(wsSession);
 
-        connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onOpen()");
+		connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onOpen()");
 
-        Struct struct = WebsocketUtil.getStruct(wsSession);
-        String channel = null;
-        String k, v;
+		Struct struct = WebsocketUtil.getStruct(wsSession);
+		String channel = null;
+		String k, v;
 
-        struct.setEL(WebsocketUtil.KEY_WEBSOCKET_ID, wsSession.getId());
+		struct.setEL(WebsocketUtil.KEY_WEBSOCKET_ID, wsSession.getId());
 
-        Struct pathParams = LuceeApps.getCreationUtil().createStruct();
-        for (Map.Entry<String, String> e : wsSession.getPathParameters().entrySet()){
-            k = e.getKey();
-            v = e.getValue();
-            pathParams.setEL(LuceeApps.toKey(k), v);
+		Struct pathParams = LuceeApps.getCreationUtil().createStruct();
+		for (Map.Entry<String, String> e : wsSession.getPathParameters().entrySet()) {
+			k = e.getKey();
+			v = e.getValue();
+			pathParams.setEL(LuceeApps.toKey(k), v);
 
-            if (k.equalsIgnoreCase("channel"))
-                channel = v;
-        }
-        struct.put(WebsocketUtil.KEY_PATH_PARAMETERS, pathParams);
+			if (k.equalsIgnoreCase("channel"))
+				channel = v;
+		}
+		struct.put(WebsocketUtil.KEY_PATH_PARAMETERS, pathParams);
 
+		connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " calling listener.onOpen()");
 
-        connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " calling listener.onOpen()");
+		Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(websocket, LISTENER_METHOD_ON_OPEN,
+				ARG_WEBSOCKET, websocket, ARG_ENDPOINT_CONFIG, endpointConfig, ARG_SESSION_SCOPE,
+				websocket.getSessionScope(), ARG_APPLICATION_SCOPE, websocket.getApplicationScope());
 
-        Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(
-                websocket
-                ,LISTENER_METHOD_ON_OPEN
-                ,ARG_WEBSOCKET, websocket
-                ,ARG_ENDPOINT_CONFIG, endpointConfig
-                ,ARG_SESSION_SCOPE, websocket.getSessionScope()
-                ,ARG_APPLICATION_SCOPE, websocket.getApplicationScope()
-        );
+		if (LuceeApps.isBooleanFalse(luceeResult)) {
+			// terminate the connection if listener returned false
 
-        if (LuceeApps.isBooleanFalse(luceeResult)){
-            // terminate the connection if listener returned false
+			connMgr.log(Log.LEVEL_INFO, "connection " + wsSession.getId()
+					+ " listener.onOpen() refused the connection by returning false. closing connection.");
 
-            connMgr.log(Log.LEVEL_INFO, "connection " + wsSession.getId() + " listener.onOpen() refused the connection by returning false. closing connection.");
+			try {
+				wsSession.close();
+			}
+			catch (IOException e) {
+			}
+		}
 
-            try {
-                wsSession.close();
-            } catch (IOException e) {}
-        }
+		if (channel != null) {
+			// if {channel} appears in the path parameters then subscribe the user to that channel
+			connMgr.subscribe(channel, websocket);
+		}
 
+		wsSession.addMessageHandler(new MessageHandler.Whole<String>() {
 
-        if (channel != null){
-            // if {channel} appears in the path parameters then subscribe the user to that channel
-            connMgr.subscribe(channel, websocket);
-        }
+			public void onMessage(String message) {
 
+				connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onMessage(); " + message);
 
-        wsSession.addMessageHandler(new MessageHandler.Whole<String>() {
+				Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(websocket,
+						LISTENER_METHOD_ON_MESSAGE, ARG_WEBSOCKET, websocket, ARG_MESSAGE, message, ARG_SESSION_SCOPE,
+						websocket.getSessionScope(), ARG_APPLICATION_SCOPE, websocket.getApplicationScope());
 
-            public void onMessage(String message) {
+				connMgr.log(Log.LEVEL_DEBUG, "listener.onMessage() "
+						+ (luceeResult == null ? "did not return a value" : "returned: " + luceeResult.toString()));
 
-                connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onMessage(); " + message);
+				if (LuceeApps.getDecisionUtil().isSimpleValue(luceeResult)) {
+					// if Lucee returned a CFML simple-value then send it back in a message
+					websocket.sendText(luceeResult.toString());
+				}
 
-                Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(
-                         websocket
-                        ,LISTENER_METHOD_ON_MESSAGE
-                        ,ARG_WEBSOCKET, websocket
-                        ,ARG_MESSAGE, message
-                        ,ARG_SESSION_SCOPE, websocket.getSessionScope()
-                        ,ARG_APPLICATION_SCOPE, websocket.getApplicationScope()
-                );
+				// System.out.println(LuceeEndpoint.class.getSimpleName() + ".onMessage");
+			}
+		});
 
-                connMgr.log(Log.LEVEL_DEBUG, "listener.onMessage() " + (luceeResult == null ? "did not return a value" : "returned: " + luceeResult.toString()));
+		// System.out.println(this.getClass().getName() + " >>> exit onOpen()");
+	}
 
-                if (LuceeApps.getDecisionUtil().isSimpleValue(luceeResult)){
-                    // if Lucee returned a CFML simple-value then send it back in a message
-                    websocket.sendText(luceeResult.toString());
-                }
+	/**
+	 * Event that is triggered when a session has closed.
+	 *
+	 * @param wsSession
+	 *            The session
+	 * @param closeReason
+	 *            Why the session was closed
+	 */
+	public void onClose(Session wsSession, CloseReason closeReason) {
 
-                // System.out.println(LuceeEndpoint.class.getSimpleName() + ".onMessage");
-            }
-        });
+		ConnectionManager connMgr = ConnectionManager.getConnectionManager(wsSession);
+		connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onClose(); " + closeReason.toString());
 
-        // System.out.println(this.getClass().getName() + " >>> exit onOpen()");
-    }
+		WebSocket websocket = WebsocketUtil.asWebsocketWrapper(wsSession);
 
+		Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(websocket, LISTENER_METHOD_ON_CLOSE,
+				ARG_WEBSOCKET, websocket, ARG_CLOSE_REASON, closeReason, ARG_SESSION_SCOPE, websocket.getSessionScope(),
+				ARG_APPLICATION_SCOPE, websocket.getApplicationScope());
 
-    /**
-     * Event that is triggered when a session has closed.
-     *
-     * @param wsSession       The session
-     * @param closeReason   Why the session was closed
-     */
-    public void onClose(Session wsSession, CloseReason closeReason) {
+		connMgr.unsubscribeAll(WebsocketUtil.asWebsocketWrapper(wsSession));
+	}
 
-        ConnectionManager connMgr = ConnectionManager.getConnectionManager(wsSession);
-        connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onClose(); " + closeReason.toString());
+	/**
+	 * Event that is triggered when a protocol error occurs.
+	 *
+	 * @param wsSession
+	 *            The session.
+	 * @param throwable
+	 *            The exception.
+	 */
+	public void onError(Session wsSession, Throwable throwable) {
 
-        WebSocket websocket = WebsocketUtil.asWebsocketWrapper(wsSession);
+		ConnectionManager connMgr = ConnectionManager.getConnectionManager(wsSession);
 
-        Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(
-                 websocket
-                ,LISTENER_METHOD_ON_CLOSE
-                ,ARG_WEBSOCKET, websocket
-                ,ARG_CLOSE_REASON, closeReason
-                ,ARG_SESSION_SCOPE, websocket.getSessionScope()
-                ,ARG_APPLICATION_SCOPE, websocket.getApplicationScope()
-        );
+		connMgr.log(Log.LEVEL_DEBUG,
+				"connection " + wsSession.getId() + " enter onError(); " + WebsocketUtil.getStackTrace(throwable));
 
-        connMgr.unsubscribeAll(WebsocketUtil.asWebsocketWrapper(wsSession));
-    }
+		WebSocket websocket = WebsocketUtil.asWebsocketWrapper(wsSession);
 
+		Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(websocket, LISTENER_METHOD_ON_ERROR,
+				ARG_WEBSOCKET, websocket, ARG_ERROR, throwable, ARG_SESSION_SCOPE, websocket.getSessionScope(),
+				ARG_APPLICATION_SCOPE, websocket.getApplicationScope());
 
-    /**
-     * Event that is triggered when a protocol error occurs.
-     *
-     * @param wsSession   The session.
-     * @param throwable The exception.
-     */
-    public void onError(Session wsSession, Throwable throwable) {
-
-        ConnectionManager connMgr = ConnectionManager.getConnectionManager(wsSession);
-
-        connMgr.log(Log.LEVEL_DEBUG, "connection " + wsSession.getId() + " enter onError(); " + WebsocketUtil.getStackTrace(throwable));
-
-        WebSocket websocket = WebsocketUtil.asWebsocketWrapper(wsSession);
-
-        Object luceeResult = WebsocketUtil.invokeListenerMethodWithNamedArgs(
-                 websocket
-                ,LISTENER_METHOD_ON_ERROR
-                ,ARG_WEBSOCKET, websocket
-                ,ARG_ERROR, throwable
-                ,ARG_SESSION_SCOPE, websocket.getSessionScope()
-                ,ARG_APPLICATION_SCOPE, websocket.getApplicationScope()
-        );
-
-        connMgr.unsubscribeAll(WebsocketUtil.asWebsocketWrapper(wsSession));
-    }
+		connMgr.unsubscribeAll(WebsocketUtil.asWebsocketWrapper(wsSession));
+	}
 
 }
