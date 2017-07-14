@@ -323,7 +323,11 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 			try {
 
-				wsSession.getBasicRemote().sendBinary(byteBuffer);
+				synchronized (wsSession){
+
+					wsSession.getBasicRemote().sendBinary(byteBuffer);
+				}
+
 				return true;
 			}
 			catch (IOException ioe) {
@@ -337,7 +341,11 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 		if (wsSession.isOpen()) {
 
-			wsSession.getAsyncRemote().sendBinary(byteBuffer);
+			synchronized (wsSession){
+
+				wsSession.getAsyncRemote().sendBinary(byteBuffer);
+			}
+
 			return true;
 		}
 
@@ -350,7 +358,11 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 			try {
 
-				wsSession.getBasicRemote().sendObject(o);
+				synchronized (wsSession){
+
+					wsSession.getBasicRemote().sendObject(o);
+				}
+
 				return true;
 			}
 			catch (EncodeException e) {
@@ -367,7 +379,11 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 		if (wsSession.isOpen()) {
 
-			wsSession.getAsyncRemote().sendObject(o);
+			synchronized (wsSession){
+
+				wsSession.getAsyncRemote().sendObject(o);
+			}
+
 			return true;
 		}
 
@@ -380,7 +396,11 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 			try {
 
-				wsSession.getBasicRemote().sendText(s);
+				synchronized (wsSession){
+
+					wsSession.getBasicRemote().sendText(s);
+				}
+
 				return true;
 			}
 			catch (IOException ioe) {
@@ -396,7 +416,11 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 		if (wsSession.isOpen()) {
 
-			wsSession.getAsyncRemote().sendText(s);
+			synchronized (wsSession){
+
+				wsSession.getAsyncRemote().sendText(s);
+			}
+
 			return true;
 		}
 

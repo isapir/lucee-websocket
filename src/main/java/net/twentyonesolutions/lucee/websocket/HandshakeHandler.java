@@ -66,7 +66,7 @@ public class HandshakeHandler extends ServerEndpointConfig.Configurator {
 
 		if (httpSession == null) {
 			throw new RuntimeException(
-					"HttpSession is not initialized. Configure the filter net.twentyonesolutions.servlet.filter.HttpSessionInitializerFilter to resolve this.");
+					"HttpSession is not initialized. Configure the Filter net.twentyonesolutions.servlet.filter.HttpSessionInitializerFilter for this context to resolve this.");
 		}
 
 		String webroot = httpSession.getServletContext().getRealPath("/");
