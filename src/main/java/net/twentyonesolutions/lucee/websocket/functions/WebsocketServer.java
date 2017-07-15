@@ -42,13 +42,23 @@ public class WebsocketServer extends BIF {
 		String endpoint = (String) args[0];
 		Component listenerComponent = (Component) args[1];
 
-		String key = pc.getServletContext().getRealPath("/") + "@" + endpoint;
+		String key;
+		LuceeApp luceeApp;
+		LuceeAppListener luceeAppListener;
+		ConnectionManager connManager;
 
-		LuceeApp luceeApp = (LuceeApp) RegisterLuceeApp.call(pc);
-		LuceeAppListener luceeAppListener = LuceeApps.registerListener(luceeApp, listenerComponent, key);
+		luceeApp = (LuceeApp) RegisterLuceeApp.call(pc);
 
-		ConnectionManager connManager = ConnectionManager.getConnectionManager(key);
-		connManager.setAppListener(luceeAppListener);
+		// register full key with context root
+		key = pc.getServletContext().getRealPath("/") + "@" + endpoint;
+		luceeAppListener = LuceeApps.registerListener(luceeApp, listenerComponent, key);
+		connManager = ConnectionManager.setAppListener(key, luceeAppListener);
+
+		/*
+		 * // register partial key without context root (default, for single context, in case we don't have Filter) key
+		 * = "@" + endpoint; luceeAppListener = LuceeApps.registerListener(luceeApp, listenerComponent, key);
+		 * connManager = ConnectionManager.setAppListener(key, luceeAppListener); //
+		 */
 
 		try {
 

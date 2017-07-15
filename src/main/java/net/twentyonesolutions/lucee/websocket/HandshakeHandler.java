@@ -65,13 +65,13 @@ public class HandshakeHandler extends ServerEndpointConfig.Configurator {
 		HttpSession httpSession = (HttpSession) request.getHttpSession();
 
 		if (httpSession == null) {
-			throw new RuntimeException(
-					"HttpSession is not initialized. Configure the Filter net.twentyonesolutions.servlet.filter.HttpSessionInitializerFilter for this context to resolve this.");
+			throw new RuntimeException("HttpSession is not initialized. "
+					+ "Configure the Filter net.twentyonesolutions.servlet.filter.HttpSessionInitializerFilter "
+					+ "for this context to resolve this issue and enable multiple contexts support.");
 		}
 
-		String webroot = httpSession.getServletContext().getRealPath("/");
-
-		String listenerKey = webroot + "@" + sec.getPath();
+		String keyPrefix = httpSession.getServletContext().getRealPath("/");
+		String listenerKey = keyPrefix + "@" + sec.getPath();
 
 		// get the connection manager for the specific ServletContext and EndPoint Path
 		ConnectionManager connMgr = ConnectionManager.getConnectionManager(listenerKey);

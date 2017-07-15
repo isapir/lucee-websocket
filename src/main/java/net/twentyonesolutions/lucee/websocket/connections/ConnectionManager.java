@@ -38,7 +38,22 @@ public class ConnectionManager implements lucee.runtime.type.Objects {
 	static int cleanupInterval = 60;
 
 	/**
-	 * return the ConnectionManager for the passed endpoint
+	 * registers the LuceeAppListener with the ConnectionManager for the passed endpoint. the ConnectionManager is
+	 * created if not exists.
+	 *
+	 * @param endpoint
+	 * @param luceeAppListener
+	 * @return
+	 */
+	public static ConnectionManager setAppListener(String endpoint, LuceeAppListener luceeAppListener) {
+
+		ConnectionManager result = getConnectionManager(endpoint);
+		result.setAppListener(luceeAppListener);
+		return result;
+	}
+
+	/**
+	 * return the ConnectionManager for the passed endpoint. the ConnectionManager is created if not exists.
 	 *
 	 * @param endpoint
 	 * @return

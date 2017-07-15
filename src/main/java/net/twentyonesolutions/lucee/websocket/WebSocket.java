@@ -323,7 +323,7 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 			try {
 
-				synchronized (wsSession){
+				synchronized (wsSession) {
 
 					wsSession.getBasicRemote().sendBinary(byteBuffer);
 				}
@@ -341,7 +341,7 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 		if (wsSession.isOpen()) {
 
-			synchronized (wsSession){
+			synchronized (wsSession) {
 
 				wsSession.getAsyncRemote().sendBinary(byteBuffer);
 			}
@@ -358,7 +358,7 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 			try {
 
-				synchronized (wsSession){
+				synchronized (wsSession) {
 
 					wsSession.getBasicRemote().sendObject(o);
 				}
@@ -379,7 +379,7 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 		if (wsSession.isOpen()) {
 
-			synchronized (wsSession){
+			synchronized (wsSession) {
 
 				wsSession.getAsyncRemote().sendObject(o);
 			}
@@ -396,7 +396,7 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 			try {
 
-				synchronized (wsSession){
+				synchronized (wsSession) {
 
 					wsSession.getBasicRemote().sendText(s);
 				}
@@ -416,7 +416,7 @@ public class WebSocket implements javax.websocket.Session, Objects {
 
 		if (wsSession.isOpen()) {
 
-			synchronized (wsSession){
+			synchronized (wsSession) {
 
 				wsSession.getAsyncRemote().sendText(s);
 			}
