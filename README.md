@@ -6,6 +6,35 @@
 
 ## Installation 
 
+## Update July 14th, 2017
+
+Version 2.0.1 is out, and it fixes major issues but also adds to the installation process a bit.  The new installation process is as follows:
+
+- Install the extension from the Admin or by downloading the `.lex` file and dropping it in the `deploy` directory
+- Save the jar file `servlet-filter-utils-1.1.1.jar` to the classpath, e.g. if you're using Tomcat it can go into `{tomcat}/lib`, or if you're using Jetty then it can go into `{jetty}/lib/ext`
+- Add the following snippet to your web deployment descriptor (web.xml), **be sure to modify the `url-pattern` to match your URLs that will used with WebSockets**:
+
+```xml
+    <!-- Required for the Lucee WebSocket Extension !-->    
+    <filter>
+      <filter-name>HttpSessionInitializerFilter</filter-name>
+      <filter-class>net.twentyonesolutions.servlet.filter.HttpSessionInitializerFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+      <filter-name>HttpSessionInitializerFilter</filter-name>
+      <!-- modify url-pattern to match your websocket endpoints !-->
+      <url-pattern>/ws/*</url-pattern>
+    </filter-mapping>
+```
+
+- Restart the Servlet Container (e.g. Tomcat, Jetty, etc.)
+
+### Breaking Change
+The function `WebsocketRegister()` has been renamed to `WebsocketServer()`.  I hope to add a `WebsocketClient()` function soon so I wanted the names to make sense.
+
+---
+
 The easiest way to install the extension is from the Lucee Admin.  Navigate to the Extension Applications page in the Web or Server Admin, e.g. `/lucee/admin/server.cfm?action=ext.applications`.  Click the *Lucee Websockets Extension* icon, and then on the next page click the `Install` button.
 
 ## Getting Started
