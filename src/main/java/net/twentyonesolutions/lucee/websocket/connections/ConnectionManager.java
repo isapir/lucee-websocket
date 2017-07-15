@@ -31,10 +31,9 @@ import static net.twentyonesolutions.lucee.websocket.Constants.*;
  */
 public class ConnectionManager implements lucee.runtime.type.Objects {
 
-	static ConcurrentHashMap<String, ConnectionManager> connectionManagers = new ConcurrentHashMap(); // different
-																										// connection
-																										// manager for
-																										// each endpoint
+	// different connection manager for each endpoint
+	static ConcurrentHashMap<String, ConnectionManager> connectionManagers = new ConcurrentHashMap();
+
 	static int cleanupInterval = 60;
 
 	/**
