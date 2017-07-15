@@ -10,6 +10,7 @@
 
 Version 2.0.1 is out, and it fixes major issues but also adds to the installation process a bit.  The new installation process is as follows:
 
+- If a previous version of the extension is installed -- Uninstall it
 - Install the extension from the Admin or by downloading the `.lex` file and dropping it in the `deploy` directory
 - Save the jar file `servlet-filter-utils-1.1.1.jar` to the classpath, e.g. if you're using Tomcat it can go into `{tomcat}/lib`, or if you're using Jetty then it can go into `{jetty}/lib/ext`
 - Add the following snippet to your web deployment descriptor (web.xml), **be sure to modify the `url-pattern` to match your URLs that will used with WebSockets**:
