@@ -521,29 +521,6 @@ public class WebSocket implements javax.websocket.Session, Objects {
 	@Override
 	public DumpData toDumpData(PageContext pageContext, int maxlevel, DumpProperties properties) {
 
-		/*
-		 * try {
-		 *
-		 * // TODO: use Reflection with core:lucee.runtime.dump.DumpUtil
-		 *
-		 * Class cl = Class.forName("lucee.runtime.dump.DumpUtil");
-		 *
-		 * // public static DumpData toDumpData(Object o, PageContext pageContext, int maxlevel, DumpProperties props)
-		 *
-		 * Method method = cl.getMethod("toDumpData", Object.class, PageContext.class, int.class, DumpProperties.class);
-		 *
-		 * // the method identifies the object as a Reference instead of a simple Java Object DumpTable result =
-		 * (DumpTable)method.invoke(null,(Object)this, pageContext, maxlevel, properties);
-		 *
-		 * DumpData ddStruct = getStruct().toDumpData(pageContext, maxlevel, properties); result.appendRow(1, new
-		 * Dumper.DumpString("[data]"), ddStruct);
-		 *
-		 * return result;
-		 *
-		 * } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException
-		 * e) { e.printStackTrace(); return new Dumper.DumpString(e); } //
-		 */
-
 		DumpTable result = Dumper.toDumpData(this);
 		DumpData ddStruct = getStruct().toDumpData(pageContext, maxlevel, properties);
 		result.appendRow(1, new Dumper.DumpString("[data]"), ddStruct);

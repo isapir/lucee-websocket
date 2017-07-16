@@ -10,7 +10,7 @@ import net.twentyonesolutions.lucee.app.LuceeApps;
 import net.twentyonesolutions.lucee.app.RegisterLuceeApp;
 import net.twentyonesolutions.lucee.websocket.Configurator;
 import net.twentyonesolutions.lucee.websocket.HandshakeHandler;
-import net.twentyonesolutions.lucee.websocket.LuceeEndpoint;
+import net.twentyonesolutions.lucee.websocket.ServerEndpoint;
 import net.twentyonesolutions.lucee.websocket.connections.ConnectionManager;
 
 /**
@@ -55,14 +55,14 @@ public class WebsocketServer extends BIF {
 		connManager = ConnectionManager.setAppListener(key, luceeAppListener);
 
 		/*
-		 * // register partial key without context root (default, for single context, in case we don't have Filter) key
+		 * // register partial key without context root (default, for single context, in case we don't have ObjectFilter) key
 		 * = "@" + endpoint; luceeAppListener = LuceeApps.registerListener(luceeApp, listenerComponent, key);
 		 * connManager = ConnectionManager.setAppListener(key, luceeAppListener); //
 		 */
 
 		try {
 
-			Configurator.configureEndpoint(endpoint, LuceeEndpoint.class, HandshakeHandler.class, luceeApp);
+			Configurator.configureEndpoint(endpoint, ServerEndpoint.class, HandshakeHandler.class, luceeApp);
 		}
 		catch (Throwable t) {
 

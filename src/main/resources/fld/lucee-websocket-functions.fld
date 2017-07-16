@@ -43,6 +43,36 @@
 	</function>
 
 
+	<!-- <WebsocketClient !-->
+	<function>
+		<name>WebsocketClient</name>
+		<class bundle-name="net.twentyonesolutions.luceewebsocket">net.twentyonesolutions.lucee.websocket.functions.WebsocketServer</class>
+		<description>Creates a WebSocket Endpoint on the servlet container and registers a Listener Component with it.</description>
+		<argument>
+			<name>endpoint</name>
+			<type>string</type>
+			<required>yes</required>
+			<description>The WebSocket's endpoint path, e.g. "/ws/echo" or "/chat/{channel}"</description>
+		</argument>
+		<argument>
+			<name>listener</name>
+			<type>any</type>
+			<required>yes</required>
+			<description>A Component whose event handler methods will be called to handle Websocket events, like
+				onHandshake(), onOpen(), onMessage(), onClose(), and onError()
+			</description>
+		</argument>
+		<!--argument>
+			<name>settings</name>
+			<type>struct</type>
+			<required>no</required>
+			<description>A Struct with settings like TODO: log file [application], TODO: ConnectionManager listener (notify)</description>
+		</argument!-->
+		<return>
+			<type>any</type>
+		</return>
+	</function>
+
 
 	<!-- WebsocketRegister !-->
 	<function>

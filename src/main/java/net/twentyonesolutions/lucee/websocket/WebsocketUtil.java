@@ -1,17 +1,20 @@
 package net.twentyonesolutions.lucee.websocket;
 
 import lucee.commons.io.log.Log;
+import lucee.runtime.Component;
 import lucee.runtime.type.Collection;
 import lucee.runtime.type.Struct;
 import lucee.runtime.type.scope.Application;
 import net.twentyonesolutions.lucee.app.LuceeApp;
 import net.twentyonesolutions.lucee.app.LuceeAppListener;
 import net.twentyonesolutions.lucee.app.LuceeApps;
+import net.twentyonesolutions.lucee.app.LuceeAppsUtil;
 import net.twentyonesolutions.lucee.websocket.connections.ConnectionManager;
 
 import javax.websocket.Session;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -43,8 +46,71 @@ public class WebsocketUtil {
 		return result;
 	}
 
-	public static Object invokeListenerMethodWithNamedArgs(LuceeAppListener appListener, Collection.Key method,
-			Object... args) {
+
+
+	/*
+	public static void populateStructFromArray(Struct struct, Object... args){
+
+		LuceeAppsUtil.populateStruct(struct, WebsocketUtil::asWebsocketWrapperIfWebsocket, args);
+
+		Iterator it = struct.getIterator();
+		while(it.hasNext()){
+			Object o = it.next();
+			System.out.println(o);
+		}
+
+		if (args.length % 2 != 0)
+			throw new IllegalArgumentException("args must be of even length");
+
+		Collection.Key key;
+		Object value;
+
+		// args must have even size, where each key is followed by value
+		for (int i = 0; i < args.length; i += 2) {
+
+			// even index is the key, which must be either Collection.Key or String
+			key = (args[i] instanceof Collection.Key) ?
+					(Collection.Key) args[i]
+					:
+					LuceeApps.toKey((String) args[i]);
+
+			value = args[i + 1];
+
+			// wrap JSR Session(s) as WebSocket(s) before passing them to listener
+			if (value instanceof javax.websocket.Session && (!(value instanceof WebSocket)))
+				value = WebsocketUtil.asWebsocketWrapper((Session) value);
+
+			struct.setEL(key, value);
+		}
+	}
+	//*/
+
+	public static Object invokeMethodWithNamedArgs(
+			 Component component
+			,Collection.Key method
+			,Object... args) {
+
+		if (LuceeApps.hasMethod(component, method)){
+
+//			luceeApp.log(Log.LEVEL_DEBUG, "calling listener." + method + "()", "websocket", "websocket");
+
+			Struct struct = LuceeApps.getCreationUtil().createStruct();
+
+			LuceeAppsUtil.populateStruct(struct, WebsocketUtil::asWebsocketWrapperIfWebsocket, args);
+		}
+		else {
+
+//			luceeApp.log(Log.LEVEL_DEBUG, "listener." + method + "() is not implemented", "websocket", "websocket");
+		}
+
+		return null;
+	}
+
+
+	public static Object invokeListenerMethodWithNamedArgs(
+			 LuceeAppListener appListener
+			,Collection.Key method
+			,Object... args) {
 
 		if (appListener == null)
 			return null;
@@ -56,23 +122,8 @@ public class WebsocketUtil {
 			luceeApp.log(Log.LEVEL_DEBUG, "calling listener." + method + "()", "websocket", "websocket");
 
 			Struct struct = LuceeApps.getCreationUtil().createStruct();
-			Collection.Key key;
-			Object value;
 
-			// args must have even size, where each key is followed by value
-			for (int i = 0; i < args.length; i += 2) {
-
-				// even index is the key, which must be either Collection.Key or String
-				key = (args[i] instanceof Collection.Key ? (Collection.Key) args[i]
-						: LuceeApps.toKey((String) args[i]));
-
-				value = args[i + 1];
-				// wrap JSR Session(s) as WebSocket(s) before passing them to listener
-				if (value instanceof javax.websocket.Session && (!(value instanceof WebSocket)))
-					value = WebsocketUtil.asWebsocketWrapper((Session) value);
-
-				struct.setEL(key, value);
-			}
+			LuceeAppsUtil.populateStruct(struct, WebsocketUtil::asWebsocketWrapperIfWebsocket, args);
 
 			Object luceeResult = appListener.invokeWithNamedArgs(method, struct);
 
@@ -96,8 +147,10 @@ public class WebsocketUtil {
 		return null;
 	}
 
-	public static Object invokeListenerMethodWithNamedArgs(javax.websocket.Session session, Collection.Key method,
-			Object... args) {
+	public static Object invokeListenerMethodWithNamedArgs(
+			 javax.websocket.Session session
+			,Collection.Key method
+			,Object... args) {
 
 		LuceeAppListener appListener = WebsocketUtil.getLuceeAppListener(session);
 		return invokeListenerMethodWithNamedArgs(appListener, method, args);
@@ -124,6 +177,16 @@ public class WebsocketUtil {
 
 		return websocket;
 	}
+
+
+	public static Object asWebsocketWrapperIfWebsocket(Object o){
+
+		if (o instanceof WebSocket || o instanceof javax.websocket.Session)
+			return asWebsocketWrapper((javax.websocket.Session)o);
+
+		return o;
+	}
+
 
 	/**
 	 *
