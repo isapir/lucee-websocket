@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -453,7 +454,19 @@ public class WebSocket implements javax.websocket.Session, Objects {
 	 */
 	public Set<String> getChannels() {
 
-		return (Set) wsSession.getUserProperties().get(PROPERTY_CHANNELS);
+		if (wsSession.isOpen()){
+
+			try {
+
+				return (Set) wsSession.getUserProperties().get(PROPERTY_CHANNELS);
+			}
+			catch (IllegalStateException ise){
+
+				this.getConnectionManager().log(Log.LEVEL_DEBUG, this.getId() + ": " + ise.getMessage());
+			}
+		}
+
+		return Collections.EMPTY_SET;
 	}
 
 	public int subscribe(String channelId) {

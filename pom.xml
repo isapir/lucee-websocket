@@ -6,7 +6,7 @@
 
     <groupId>net.twentyonesolutions</groupId>
     <artifactId>lucee-websocket</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
 
     <name>Lucee WebSocket</name>
     <description>Enables server WebSockets for Lucee via JSR-356 compliant servlet containers (e.g. Tomcat 8, Jetty 9.1, etc.)</description>
@@ -37,7 +37,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <tomcat.version>8.5.16</tomcat.version>
+        <tomcat.version>8.5.20</tomcat.version>
     </properties>
 
     <build>

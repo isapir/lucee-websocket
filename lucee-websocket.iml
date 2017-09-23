@@ -18,7 +18,21 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-websocket:8.5.12" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-juli:8.5.12" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util:8.5.12" level="project" />
-    <orderEntry type="module" module-name="loader" />
-    <orderEntry type="module" module-name="lucee-apps" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jsp-api:8.5.20" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-el-api:8.5.20" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-servlet-api:8.5.20" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.tomcat:tomcat-websocket-api:8.5.20" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-websocket:8.5.20" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-juli:8.5.20" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-util:8.5.20" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.lucee:lucee:5.1.4.19" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.felix:org.apache.felix.framework:4.6.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet.jsp:jsp-api:2.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.el:javax.el-api:3.0.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.ant:ant:1.9.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.ant:ant-launcher:1.9.5" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.twentyonesolutions:lucee-apps:2.0.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet.jsp:javax.servlet.jsp-api:2.3.1" level="project" />
   </component>
 </module>
