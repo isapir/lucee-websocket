@@ -116,7 +116,15 @@ public class HandshakeHandler extends ServerEndpointConfig.Configurator {
 
 				Map<String, String> cookies = parseRequestHeaderCookie(rawCookies.get(0));
 
-				idCookieValue = cookies.get(idCookieName);
+				String realkey = idCookieName;
+
+				for (String c : cookies.keySet()){
+					if (c.equalsIgnoreCase(idCookieName)){
+						realkey = c;
+					 }
+				 }
+
+				idCookieValue = cookies.get(realkey);
 				if (idCookieValue != null)
 					userProps.put(idCookieName, idCookieValue); // store cfid in UserProperties for future use
 			}
