@@ -70,7 +70,7 @@ Please use [Lucee Websockets Extension on Lucee Dev](https://dev.lucee.org/t/luc
 
 ## Copyright / License
 
-Copyright 2016-2017 Igal Sapir
+Copyright 2016-2020 Igal Sapir
 
 This software is licensed under the Lesser GNU General Public License Version 2.1 (or later); you may not use this work except in compliance with the License. You may obtain a copy of the License in the LICENSE file, or at:
 [http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt)
