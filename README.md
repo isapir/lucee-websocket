@@ -30,9 +30,11 @@
         1. Log into the Web or Server Admin and navigate to the ***Extension → Applications*** page (e.g., `https://[domain.name]/lucee/admin/server.cfm?action=ext.applications`).
         2. Click the ***Lucee Websockets Extension*** icon. On the next page, confirm the version to install and click the ***Install*** button.
     2. Alternatively, you can download the `.lex` file and drop it in the `deploy` directory of your Lucee setup.
-    
+
 2. Add the following snippet to your web deployment descriptor (`web.xml`).
     
+    >⚠️&nbsp; If you are <b>NOT</b> using Tomcat as your servlet container, download the JAR file [servlet-filter-utils-1.1.1.jar](https://github.com/isapir/lucee-websocket/releases/download/2.0.3/servlet-filter-utils-1.1.1.jar) and save it to the classpath. If you’re using Jetty, it can go into `{jetty}/lib/ext`
+  
     >ℹ️ &nbsp; Modify the `url-pattern` to match your URLs that will used with WebSockets.
 
     
@@ -44,12 +46,21 @@
          PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/dtd/web-app_2_3.dtd">
     <web-app>
+        <!-- Use this filter code block if installing on Tomcat !-->
+        <filter>
+            <filter-name>HttpSessionInitializerFilter</filter-name>
+            <filter-class>org.apache.catalina.filters.SessionInitializerFilter</filter-class>
+        </filter>
+
+        <!-- Use this filter code block if you installed servlet-filter-utils-1.1.1.jar manually, e.g. for Jetty !-->
+        <!-- 
         <filter>
             <filter-name>HttpSessionInitializerFilter</filter-name>
             <filter-class>net.twentyonesolutions.servlet.filter.HttpSessionInitializerFilter</filter-class>
-        </filter>
+        </filter> 
+        !-->
     
-    		<!-- modify url-pattern to match your websocket endpoints !-->
+    	<!-- modify url-pattern to match your websocket endpoints !-->
         <filter-mapping>
             <filter-name>HttpSessionInitializerFilter</filter-name>
             <url-pattern>/ws/*</url-pattern>
