@@ -30,14 +30,8 @@
         1. Log into the Web or Server Admin and navigate to the ***Extension → Applications*** page (e.g., `https://[domain.name]/lucee/admin/server.cfm?action=ext.applications`).
         2. Click the ***Lucee Websockets Extension*** icon. On the next page, confirm the version to install and click the ***Install*** button.
     2. Alternatively, you can download the `.lex` file and drop it in the `deploy` directory of your Lucee setup.
-2. Download the JAR file [servlet-filter-utils-1.1.1.jar](https://github.com/isapir/lucee-websocket/releases/download/2.0.3/servlet-filter-utils-1.1.1.jar) and save it to the classpath.
     
-    
-    >ℹ️ &nbsp; If you’re using Tomcat, it can go into `{tomcat}/lib`. 
-    If you’re using Jetty, it can go into `{jetty}/lib/ext`
-    
-    
-3. Add the following snippet to your web deployment descriptor (`web.xml`).
+2. Add the following snippet to your web deployment descriptor (`web.xml`).
     
     >ℹ️ &nbsp; Modify the `url-pattern` to match your URLs that will used with WebSockets.
 
@@ -63,8 +57,8 @@
     </web-app>
     ```
     
-4. Restart the Servlet Container (e.g., Tomcat, Jetty, etc.)
-5. If you have a web server relaying requests to Lucee, follow the web server configuration instructions.
+3. Restart the Servlet Container (e.g., Tomcat, Jetty, etc.)
+4. If you have a web server relaying requests to Lucee, follow the web server configuration instructions.
 
 ## Usage (Server)
 
